@@ -2,6 +2,9 @@
     "name": "violinist-dev/job-summary",
     "type": "library",
     "license": "MIT",
+    "autoload": {
+        "psr-4": {"violinist\\JobSummary\\": "src"}
+    },
     "authors": [
         {
             "name": "Eirik S. Morland",
