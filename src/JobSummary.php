@@ -137,7 +137,11 @@ class JobSummary
                   }
                 }
                 else {
-                  $this->updates = $message->context->packages;
+                  $this->updates = [];
+                  // "Convert" to array.
+                  foreach ($message->context->packages as $package) {
+                    $this->updates[] = $package;
+                  }
                 }
                 break;
 
