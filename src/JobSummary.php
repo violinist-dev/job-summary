@@ -145,6 +145,13 @@ class JobSummary
                 }
                 break;
 
+              case 'pr_url':
+                if (!empty($message->context)) {
+                  $this->prs[] = $message;
+                }
+                break;
+
+
               case 'pr_exists':
                 if (!empty($message->context)) {
                   $this->prs[] = $message;
