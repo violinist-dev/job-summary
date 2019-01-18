@@ -103,6 +103,15 @@ class JobSummary
     $this->errors = $errors;
   }
 
+  public function getUpdateForPackage($package) {
+    foreach ($this->getUpdates() as $update) {
+      if ($update->name == $package) {
+        return $update;
+      }
+    }
+    return FALSE;
+  }
+
     public function __construct(array $messages)
     {
         $this->rawMessages = $messages;
