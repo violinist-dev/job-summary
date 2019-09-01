@@ -173,6 +173,12 @@ class JobSummary
                 }
                 break;
 
+              case 'error':
+                if (!empty($message->context->package)) {
+                  $this->errors[] = $message;
+                }
+                break;
+
               default:
                 break;
             }
