@@ -20,7 +20,7 @@ class JobSummary
     protected $blacklisted = [];
 
   /**
-   * @return array
+   * @return \stdClass[]
    */
   public function getPrs() {
     return $this->prs;
@@ -48,7 +48,7 @@ class JobSummary
   }
 
   /**
-   * @return array
+   * @return \stdClass[]
    */
   public function getNotUpdated() {
     return $this->notUpdated;
