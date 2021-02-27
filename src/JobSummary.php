@@ -126,6 +126,12 @@ class JobSummary
               $this->errors[] = $message;
               continue;
           }
+          if (!empty($message->context->package) && $message->type == 'command' && !empty($message->context->type) && $message->context->type === 'exit_code_output') {
+              // This means the package had an error upon update, and it was not
+              // updated.
+              $this->notUpdated[] = $message;
+              continue;
+          }
             switch ($message->type) {
               case 'unupdate':
                 $this->outsideConstraint[] = $message;
