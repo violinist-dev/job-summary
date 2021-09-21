@@ -1,15 +1,24 @@
 {
     "name": "violinist-dev/job-summary",
+    "description": "Used to parse and analyze the logs, to provide a job summary",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {"violinist\\JobSummary\\": "src"}
     },
-    "authors": [
+    "scripts": {
+      "test": "@composer lint && phpunit",
+      "lint": "phpcs -p -n"
+    },
+  "authors": [
         {
             "name": "Eirik S. Morland",
             "email": "eirik@morland.no"
         }
     ],
-    "require": {}
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.6",
+        "phpunit/phpunit": "^9.5",
+        "php-coveralls/php-coveralls": "^2.4"
+    }
 }
