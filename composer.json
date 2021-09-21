@@ -1,5 +1,6 @@
 {
     "name": "violinist-dev/job-summary",
+    "description": "Used to parse and analyze the logs, to provide a job summary",
     "type": "library",
     "license": "MIT",
     "autoload": {
