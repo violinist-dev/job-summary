@@ -5,6 +5,8 @@ namespace violinist\JobSummary;
 class JobSummary
 {
 
+    const COMPOSER_2_ERROR = 'composer-2-error';
+
     protected $rawMessages;
 
     protected $errors = [];
@@ -18,6 +20,10 @@ class JobSummary
     protected $prs = [];
 
     protected $blacklisted = [];
+
+    protected $finishedSuccessFully = false;
+
+    protected $composer2error = false;
 
   /**
    * @return \stdClass[]
@@ -118,6 +124,19 @@ class JobSummary
         $this->analyzeMessages();
     }
 
+    public function didFinishWithSuccess()
+    {
+        return $this->finishedSuccessFully;
+    }
+
+    public function getErrorType()
+    {
+        if ($this->composer2error) {
+            return self::COMPOSER_2_ERROR;
+        }
+        return false;
+    }
+
     protected function analyzeMessages()
     {
         foreach ($this->rawMessages as $message) {
@@ -126,11 +145,19 @@ class JobSummary
               $this->errors[] = $message;
               continue;
           }
+          if (!empty($message->message) && preg_match('/require.*should not contain uppercase/', $message->message, $output_array)) {
+              $this->composer2error = true;
+          }
           if (!empty($message->context->package) && $message->type == 'command' && !empty($message->context->type) && $message->context->type === 'exit_code_output') {
               // This means the package had an error upon update, and it was not
               // updated.
               $this->notUpdated[] = $message;
               continue;
+          }
+          if (!empty($message->message) && $message->message === 'Cleaning up after update check.') {
+              // For now, let's say that indicates this was finished with
+              // success.
+              $this->finishedSuccessFully = true;
           }
             switch ($message->type) {
               case 'unupdate':
