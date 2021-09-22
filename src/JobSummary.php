@@ -7,6 +7,8 @@ class JobSummary
 
     const COMPOSER_2_ERROR = 'composer-2-error';
 
+    const COMPOSER_INSTALL_ERROR = 'composer-install-error';
+
     protected $rawMessages;
 
     protected $errors = [];
@@ -24,6 +26,10 @@ class JobSummary
     protected $finishedSuccessFully = false;
 
     protected $composer2error = false;
+
+    protected $installError = false;
+
+    protected $runErrors = [];
 
   /**
    * @return \stdClass[]
@@ -142,6 +148,11 @@ class JobSummary
         return $this->finishedSuccessFully;
     }
 
+    public function getErrorTypes()
+    {
+        return $this->runErrors;
+    }
+
     public function getErrorType()
     {
         if ($this->composer2error) {
@@ -160,6 +171,10 @@ class JobSummary
             }
             if (!empty($message->message) && preg_match('/require.*should not contain uppercase/', $message->message, $output_array)) {
                 $this->composer2error = true;
+                $this->runErrors[] = self::COMPOSER_2_ERROR;
+            }
+            if (!empty($message->message) && preg_match('/Caught Exception: Composer install/', $message->message)) {
+                $this->runErrors[] = self::COMPOSER_INSTALL_ERROR;
             }
             if (!empty($message->context->package) && $message->type == 'command' && !empty($message->context->type) && $message->context->type === 'exit_code_output') {
                 // This means the package had an error upon update, and it was not
