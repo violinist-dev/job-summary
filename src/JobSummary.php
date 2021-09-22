@@ -172,6 +172,8 @@ class JobSummary
             if (!empty($message->message) && preg_match('/require.*should not contain uppercase/', $message->message, $output_array)) {
                 $this->composer2error = true;
                 $this->runErrors[] = self::COMPOSER_2_ERROR;
+            } else if (!empty($message->message) && preg_match('/found composer-plugin-api\[2.1.0\] but it does not match the constraint./', $message->message)) {
+                $this->runErrors[] = self::COMPOSER_2_ERROR;
             }
             if (!empty($message->message) && preg_match('/Caught Exception: Composer install/', $message->message)) {
                 $this->runErrors[] = self::COMPOSER_INSTALL_ERROR;
