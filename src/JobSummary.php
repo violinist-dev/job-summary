@@ -172,7 +172,7 @@ class JobSummary
                 continue;
             }
             if (!empty($message->message) && preg_match('/Current hour is inside timeframe disallowed/', $message->message)) {
-              $this->runErrors[] = self::TIMEFRAME_DISALLOWED_ERROR;
+                $this->runErrors[] = self::TIMEFRAME_DISALLOWED_ERROR;
             }
             if (!empty($message->message) && preg_match('/require.*should not contain uppercase/', $message->message, $output_array)) {
                 $this->composer2error = true;
