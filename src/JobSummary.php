@@ -9,6 +9,8 @@ class JobSummary
 
     const COMPOSER_INSTALL_ERROR = 'composer-install-error';
 
+    const TIMEFRAME_DISALLOWED_ERROR = 'timeframe-disallowed-error';
+
     protected $rawMessages;
 
     protected $errors = [];
@@ -168,6 +170,9 @@ class JobSummary
                 // This message is probably a horrible error.
                 $this->errors[] = $message;
                 continue;
+            }
+            if (!empty($message->message) && preg_match('/Current hour is inside timeframe disallowed/', $message->message)) {
+              $this->runErrors[] = self::TIMEFRAME_DISALLOWED_ERROR;
             }
             if (!empty($message->message) && preg_match('/require.*should not contain uppercase/', $message->message, $output_array)) {
                 $this->composer2error = true;
