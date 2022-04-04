@@ -7,9 +7,13 @@ class JobSummary
 
     const COMPOSER_2_ERROR = 'composer-2-error';
 
+    const COMPOSER_2_REQUIRED_ERROR = 'composer-2-required-error';
+
     const COMPOSER_INSTALL_ERROR = 'composer-install-error';
 
     const TIMEFRAME_DISALLOWED_ERROR = 'timeframe-disallowed-error';
+
+    const GIT_CLONE_ERROR = 'git-clone-error';
 
     protected $rawMessages;
 
@@ -171,6 +175,9 @@ class JobSummary
                 $this->errors[] = $message;
                 continue;
             }
+            if (!empty($message->message) && preg_match('/Caught Exception: Problem with the execCommand git clone/', $message->message)) {
+                $this->runErrors[] = self::GIT_CLONE_ERROR;
+            }
             if (!empty($message->message) && preg_match('/Current hour is inside timeframe disallowed/', $message->message)) {
                 $this->runErrors[] = self::TIMEFRAME_DISALLOWED_ERROR;
             }
@@ -179,6 +186,9 @@ class JobSummary
                 $this->runErrors[] = self::COMPOSER_2_ERROR;
             } else if (!empty($message->message) && preg_match('/found composer-plugin-api\[2.1.0\] but it does not match the constraint./', $message->message)) {
                 $this->runErrors[] = self::COMPOSER_2_ERROR;
+            }
+            if (!empty($message->message) && preg_match('/Plugin installation failed \(Declaration of Symfony\\\Flex\\\ParallelDownloader/', $message->message)) {
+                $this->runErrors[] = self::COMPOSER_2_REQUIRED_ERROR;
             }
             if (!empty($message->message) && preg_match('/Caught Exception: Composer install/', $message->message)) {
                 $this->runErrors[] = self::COMPOSER_INSTALL_ERROR;
