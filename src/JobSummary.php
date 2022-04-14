@@ -37,6 +37,8 @@ class JobSummary
 
     protected $runErrors = [];
 
+    protected $isSkippedForTimeFrame = false;
+
   /**
    * @return \stdClass[]
    */
@@ -154,6 +156,11 @@ class JobSummary
         return $this->finishedSuccessFully;
     }
 
+    public function skippedForTimeFrame()
+    {
+      return $this->isSkippedForTimeFrame;
+    }
+
     public function getErrorTypes()
     {
         return $this->runErrors;
@@ -174,6 +181,9 @@ class JobSummary
                 // This message is probably a horrible error.
                 $this->errors[] = $message;
                 continue;
+            }
+            if (!empty($message->message) && preg_match('/Current hour is inside timeframe disallowed/', $message->message)) {
+                $this->isSkippedForTimeFrame = true;
             }
             if (!empty($message->message) && preg_match('/Caught Exception: Problem with the execCommand git clone/', $message->message)) {
                 $this->runErrors[] = self::GIT_CLONE_ERROR;
