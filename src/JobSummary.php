@@ -15,6 +15,8 @@ class JobSummary
 
     const GIT_CLONE_ERROR = 'git-clone-error';
 
+    const UPDATE_DATA_WRONG = 'update-data-wrong';
+
     protected $rawMessages;
 
     protected $errors = [];
@@ -38,6 +40,15 @@ class JobSummary
     protected $runErrors = [];
 
     protected $isSkippedForTimeFrame = false;
+
+    private $overrideSuccessMessage = false;
+
+    private $updateOutput;
+
+    public function getUpdateOutput()
+    {
+        return $this->updateOutput;
+    }
 
   /**
    * @return \stdClass[]
@@ -182,6 +193,13 @@ class JobSummary
                 $this->errors[] = $message;
                 continue;
             }
+            if (!empty($message->message) && !empty($message->context->data) && $message->type === 'command') {
+                $flattened = array_map(function ($item) {
+                    return implode('', $item);
+                }, $message->context->data);
+                $interested_in_this = implode("\n", $flattened);
+                $this->updateOutput = $interested_in_this;
+            }
             if (!empty($message->message) && preg_match('/Current hour is inside timeframe disallowed/', $message->message)) {
                 $this->isSkippedForTimeFrame = true;
             }
@@ -209,10 +227,17 @@ class JobSummary
                 $this->notUpdated[] = $message;
                 continue;
             }
+            if (!empty($message->message) && preg_match('/Update data was in wrong format or missing/', $message->message)) {
+                $this->runErrors[] = self::UPDATE_DATA_WRONG;
+                // Also flag it to indicate it was indeed not successful.
+                $this->overrideSuccessMessage = true;
+            }
             if (!empty($message->message) && $message->message === 'Cleaning up after update check.') {
                 // For now, let's say that indicates this was finished with
                 // success.
-                $this->finishedSuccessFully = true;
+                if (!$this->overrideSuccessMessage) {
+                    $this->finishedSuccessFully = true;
+                }
             }
             switch ($message->type) {
                 case 'unupdate':
