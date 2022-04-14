@@ -162,6 +162,11 @@ class JobSummary
         $this->analyzeMessages();
     }
 
+    public function getRawMessages() : array
+    {
+        return $this->rawMessages;
+    }
+
     public function didFinishWithSuccess()
     {
         return $this->finishedSuccessFully;
