@@ -17,6 +17,8 @@ class JobSummary
 
     const UPDATE_DATA_WRONG = 'update-data-wrong';
 
+    const AUTH_NEEDED = 'auth-needed';
+
     protected $rawMessages;
 
     protected $errors = [];
@@ -204,6 +206,9 @@ class JobSummary
                 }, $message->context->data);
                 $interested_in_this = implode("\n", $flattened);
                 $this->updateOutput = $interested_in_this;
+            }
+            if (!empty($message->message) && preg_match('/You must be using the interactive console to authenticate/', $message->message)) {
+                 $this->runErrors[] = self::AUTH_NEEDED;
             }
             if (!empty($message->message) && preg_match('/Current hour is inside timeframe disallowed/', $message->message)) {
                 $this->isSkippedForTimeFrame = true;
