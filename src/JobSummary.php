@@ -176,7 +176,7 @@ class JobSummary
 
     public function skippedForTimeFrame()
     {
-      return $this->isSkippedForTimeFrame;
+        return $this->isSkippedForTimeFrame;
     }
 
     public function getErrorTypes()
