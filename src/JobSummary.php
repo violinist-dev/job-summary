@@ -224,6 +224,8 @@ class JobSummary
                 $this->runErrors[] = self::COMPOSER_2_ERROR;
             } else if (!empty($message->message) && preg_match('/found composer-plugin-api\[2.1.0\] but it does not match the constraint./', $message->message)) {
                 $this->runErrors[] = self::COMPOSER_2_ERROR;
+            } else if (!empty($message->message) && preg_match('/exists as composer-plugin-api\[1\.\d\.\d\] but these/', $message->message)) {
+                $this->runErrors[] = self::COMPOSER_2_REQUIRED_ERROR;
             }
             if (!empty($message->message) && preg_match('/Plugin installation failed \(Declaration of Symfony\\\Flex\\\ParallelDownloader/', $message->message)) {
                 $this->runErrors[] = self::COMPOSER_2_REQUIRED_ERROR;
