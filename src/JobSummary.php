@@ -218,7 +218,7 @@ class JobSummary
             if (!empty($message->message) && preg_match('/Caught Exception: Problem with the execCommand git clone/', $message->message)) {
                 $this->runErrors[] = self::GIT_CLONE_ERROR;
             }
-            if (!empty($message->message) && preg_match('/your php version \(\d+\.\d+\.\d+\) does not satisfy that requirement/', $message->message)) {
+            if (!empty($message->message) && preg_match('/your [Pp][hH][pP] version \(\d+\.\d+\.\d+\) does not satisfy that requirement/', $message->message)) {
                 $this->runErrors[] = self::PHP_NOT_SATISFIED;
             }
             if (!empty($message->message) && preg_match('/Current hour is inside timeframe disallowed/', $message->message)) {
