@@ -236,7 +236,7 @@ class JobSummary
                 $this->runErrors[] = self::COMPOSER_2_REQUIRED_ERROR;
             }
             if (!empty($message->message) && preg_match('/This package is not installable via Composer 1\.x/', $message->message)) {
-               $this->runErrors[] = self::COMPOSER_2_REQUIRED_ERROR;
+                $this->runErrors[] = self::COMPOSER_2_REQUIRED_ERROR;
             }
             if (!empty($message->message) && preg_match('/Caught Exception: Composer install/', $message->message)) {
                 $this->runErrors[] = self::COMPOSER_INSTALL_ERROR;
