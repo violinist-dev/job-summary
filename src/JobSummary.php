@@ -11,6 +11,8 @@ class JobSummary
 
     const COMPOSER_INSTALL_ERROR = 'composer-install-error';
 
+    const SCRIPT_FAILED_ERROR = 'composer-install-failed-script';
+
     const TIMEFRAME_DISALLOWED_ERROR = 'timeframe-disallowed-error';
 
     const GIT_CLONE_ERROR = 'git-clone-error';
@@ -196,7 +198,7 @@ class JobSummary
 
     protected function analyzeMessages()
     {
-        foreach ($this->rawMessages as $message) {
+        foreach ($this->rawMessages as $delta => $message) {
             if (is_string($message)) {
                 // This message is probably a horrible error.
                 $this->errors[] = $message;
@@ -216,6 +218,8 @@ class JobSummary
                 $this->isSkippedForTimeFrame = true;
             }
             if (!empty($message->message) && preg_match('/Caught Exception: Problem with the execCommand git clone/', $message->message)) {
+                $this->runErrors[] = self::GIT_CLONE_ERROR;
+            } else if (!empty($message->message) && preg_match('/404 Project Not Found/', $message->message, $output_array)) {
                 $this->runErrors[] = self::GIT_CLONE_ERROR;
             }
             if (!empty($message->message) && preg_match('/your [Pp][hH][pP] version \(\d+\.\d+\.\d+\) does not satisfy that requirement/', $message->message)) {
@@ -247,6 +251,13 @@ class JobSummary
             }
             if (!empty($message->message) && preg_match('/Caught Exception: Composer install/', $message->message)) {
                 $this->runErrors[] = self::COMPOSER_INSTALL_ERROR;
+                // Let's have a look at the last message. Did that by any chance
+                // include the generation of autoload files. Could be we have
+                // installed but should disable scripts. Let's hint about that.
+                $last_message = $this->rawMessages[$delta - 1];
+                if (!empty($last_message->message) && preg_match('/Generating autoload files/', $last_message->message)) {
+                    $this->runErrors[] = self::SCRIPT_FAILED_ERROR;
+                }
             }
             if (!empty($message->context->package) && $message->type == 'command' && !empty($message->context->type) && $message->context->type === 'exit_code_output') {
                 // This means the package had an error upon update, and it was not
