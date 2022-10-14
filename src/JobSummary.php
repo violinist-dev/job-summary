@@ -219,7 +219,14 @@ class JobSummary
                 $this->runErrors[] = self::GIT_CLONE_ERROR;
             }
             if (!empty($message->message) && preg_match('/your [Pp][hH][pP] version \(\d+\.\d+\.\d+\) does not satisfy that requirement/', $message->message)) {
-                $this->runErrors[] = self::PHP_NOT_SATISFIED;
+                // This could be the case if a package was attempted upgrade,
+                // but the actual new require did was not satisfied. Does not
+                // necessarily mean the project itself was not "PHP satisfied".
+                if (empty($message->context->package)) {
+                    // If the context has a package, then that means this was
+                    // not the actual composer install command.
+                    $this->runErrors[] = self::PHP_NOT_SATISFIED;
+                }
             }
             if (!empty($message->message) && preg_match('/Current hour is inside timeframe disallowed/', $message->message)) {
                 $this->runErrors[] = self::TIMEFRAME_DISALLOWED_ERROR;
