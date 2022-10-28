@@ -23,6 +23,8 @@ class JobSummary
 
     const PHP_NOT_SATISFIED = 'php-not-satisfied';
 
+    const EXTENSION_ERROR = 'php-extension-missing';
+
     protected $rawMessages;
 
     protected $errors = [];
@@ -245,6 +247,9 @@ class JobSummary
             }
             if (!empty($message->message) && preg_match('/Plugin installation failed \(Declaration of Symfony\\\Flex\\\ParallelDownloader/', $message->message)) {
                 $this->runErrors[] = self::COMPOSER_2_REQUIRED_ERROR;
+            }
+            if (!empty($message->message) && preg_match('/To enable extensions/', $message->message)) {
+                $this->runErrors[] = self::EXTENSION_ERROR;
             }
             if (!empty($message->message) && preg_match('/This package is not installable via Composer 1\.x/', $message->message)) {
                 $this->runErrors[] = self::COMPOSER_2_REQUIRED_ERROR;
