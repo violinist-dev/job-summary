@@ -35,6 +35,8 @@ class JobSummary
 
     protected $notUpdated = [];
 
+    protected $concurrentThrottled = [];
+
     protected $prs = [];
 
     protected $blacklisted = [];
@@ -96,6 +98,11 @@ class JobSummary
     public function getNotUpdated()
     {
         return $this->notUpdated;
+    }
+
+    public function getConcurrentThrottled() : array
+    {
+        return $this->concurrentThrottled;
     }
 
   /**
@@ -283,6 +290,10 @@ class JobSummary
                 }
             }
             switch ($message->type) {
+                case 'concurrent_throttled':
+                    $this->concurrentThrottled[] = $message;
+                    break;
+
                 case 'unupdate':
                     $this->outsideConstraint[] = $message;
                     break;
