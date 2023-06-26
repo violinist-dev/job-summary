@@ -275,6 +275,7 @@ class JobSummary
                 // This means the package had an error upon update, and it was not
                 // updated.
                 $this->notUpdated[] = $message;
+                $this->errors[] = $message;
                 continue;
             }
             if (!empty($message->message) && preg_match('/Update data was in wrong format or missing/', $message->message)) {
