@@ -311,7 +311,7 @@ class JobSummary
                 case 'update':
                     if (empty($message->context)) {
                         $this->updates = explode("\n", $message->message);
-                      // Remove the ones that are empty.
+                        // Remove the ones that are empty.
                         foreach ($this->updates as $delta => $update) {
                             if (empty($update)) {
                                 unset($this->updates[$delta]);
@@ -319,7 +319,7 @@ class JobSummary
                         }
                     } else {
                         $this->updates = [];
-                      // "Convert" to array.
+                        // "Convert" to array.
                         foreach ($message->context->packages as $package) {
                             $this->updates[] = $package;
                         }
