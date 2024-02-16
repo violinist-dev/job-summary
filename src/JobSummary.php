@@ -296,7 +296,12 @@ class JobSummary
                     break;
 
                 case 'unupdate':
-                    $this->outsideConstraint[] = $message;
+                    // @todo(eiriksm): This is hopefully only needed within the
+                    // short time until we actually can indicate these messages
+                    // way better.
+                    if (strpos($message->message, 'can not be updated to dependencies.') === false) {
+                        $this->outsideConstraint[] = $message;
+                    }
                     break;
 
                 case 'notupdated':
